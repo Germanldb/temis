@@ -1,0 +1,238 @@
+---
+import "../../styles/global.css";
+
+// El middleware ya protege esta ruta si está configurado para /admin o /chat
+// Por ahora, nos aseguramos de que el diseño sea consistente.
+---
+
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Gestión de Leyes - Temis Admin</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    </head>
+    <body class="bg-[#1e1e1e] text-[#f0f0f0] font-['Outfit',sans-serif] min-h-screen overflow-x-hidden">
+        
+        <div class="grid grid-cols-1 md:grid-cols-[96px_1fr] min-h-screen">
+            {/* Sidebar Mini */}
+            <aside class="bg-[#151515] border-b md:border-b-0 md:border-r border-white/5 flex flex-row md:flex-col items-center py-4 md:py-8 gap-6 md:gap-8 z-20">
+            <a href="/chat" class="text-2xl hover:scale-110 transition-all" title="Volver al Chat">⚖️</a>
+            <div class="h-px w-8 bg-white/10"></div>
+            <a href="/admin/documents" class="p-3 bg-[#921E16] rounded-xl shadow-lg shadow-[#921E16]/20" title="Documentos">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </a>
+            <button class="mt-auto p-3 text-white/30 hover:text-white transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+            </button>
+        </aside>
+
+        {/* Main Content */}
+        <main class="flex-1 p-6 md:p-12 overflow-y-auto w-full">
+            <header class="max-w-6xl mx-auto mb-12">
+                <div class="flex items-center justify-between mb-2">
+                    <h1 class="text-4xl font-bold tracking-tight text-white">Base de Conocimiento</h1>
+                    <span class="px-4 py-1 bg-[#efb810]/10 text-[#efb810] text-[10px] font-bold uppercase tracking-widest rounded-full border border-[#efb810]/20">Admin Mode</span>
+                </div>
+                <p class="text-white/50">Sube, procesa y gestiona las leyes que Temis utiliza para responder.</p>
+            </header>
+
+            <div class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-8">
+                
+                {/* Upload Card */}
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-[#252525] border border-white/10 p-8 rounded-[32px] shadow-2xl relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        
+                        <h2 class="text-xl font-bold mb-6">Subir Nueva Ley</h2>
+                        <form id="uploadForm" class="space-y-6">
+                            <div class="border-2 border-dashed border-white/10 hover:border-[#921E16]/50 rounded-2xl p-8 transition-all text-center group/drop">
+                                <input type="file" id="pdfFile" accept=".pdf" class="hidden" />
+                                <label for="pdfFile" class="cursor-pointer">
+                                    <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover/drop:scale-110 transition-transform">
+                                        📄
+                                    </div>
+                                    <span class="text-sm text-white/40 block mb-1">Arrastra tu PDF aquí o</span>
+                                    <span class="text-sm text-[#efb810] font-bold underline">busca un archivo</span>
+                                </label>
+                                <div id="fileName" class="mt-4 text-xs text-[#efb810] font-medium hidden"></div>
+                            </div>
+
+                            <button 
+                                type="submit"
+                                id="processBtn"
+                                class="w-full bg-[#921E16] hover:bg-[#921E16]/80 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-[#921E16]/20 disabled:opacity-50"
+                                disabled
+                            >
+                                Procesar con Python
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-[#921E16]/20 to-transparent p-6 rounded-[24px] border border-[#921E16]/20">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-[#efb810] mb-2">Estado del Servidor</h3>
+                        <div class="flex items-center gap-2 text-sm">
+                            <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                            <span>Python 3.x - Activo</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* List Card */}
+                <div class="lg:col-span-2">
+                    <div class="bg-[#252525] border border-white/10 rounded-[32px] overflow-hidden shadow-2xl">
+                        <div class="p-8 border-b border-white/5 flex justify-between items-center">
+                            <h2 class="text-xl font-bold">Leyes en Biblioteca</h2>
+                            <div class="flex gap-2">
+                                <span id="fileCount" class="bg-white/5 px-3 py-1 rounded-lg text-[10px] font-bold text-white/40 uppercase">Cargando...</span>
+                            </div>
+                        </div>
+                        
+                        <div id="lawsList" class="divide-y divide-white/5 max-h-[600px] overflow-y-auto">
+                            {/* Los items se cargarán dinámicamente */}
+                            <div class="p-12 text-center text-white/10 animate-pulse">
+                                <p class="text-sm">Buscando archivos en el servidor...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+    <script>
+            const dropZone = document.querySelector('.group\\/drop');
+            const fileInput = document.getElementById('pdfFile');
+            const fileName = document.getElementById('fileName');
+            const processBtn = document.getElementById('processBtn');
+            const uploadForm = document.getElementById('uploadForm');
+
+            // Feedback visual al arrastrar
+            ['dragover', 'dragenter'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.add('border-[#921E16]', 'bg-[#921E16]/5');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    dropZone.classList.remove('border-[#921E16]', 'bg-[#921E16]/5');
+                });
+            });
+
+            // Manejar soltar archivo
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const file = dt.files[0];
+                if (file && file.type === 'application/pdf') {
+                    fileInput.files = dt.files;
+                    handleFileSelect(file);
+                } else {
+                    alert('Por favor, sube solo archivos PDF.');
+                }
+            });
+
+            function handleFileSelect(file) {
+                if (file) {
+                    fileName.textContent = `Seleccionado: ${file.name}`;
+                    fileName.classList.remove('hidden');
+                    processBtn.disabled = false;
+                    processBtn.classList.add('animate-pulse');
+                    setTimeout(() => processBtn.classList.remove('animate-pulse'), 1000);
+                }
+            }
+
+            fileInput.addEventListener('change', (e) => {
+                handleFileSelect(e.target.files[0]);
+            });
+
+            const lawsList = document.getElementById('lawsList');
+            const fileCount = document.getElementById('fileCount');
+
+            async function fetchLaws() {
+                try {
+                    const response = await fetch('/api/admin/list-laws');
+                    const data = await response.json();
+                    
+                    if (data.files && data.files.length > 0) {
+                        fileCount.textContent = `${data.files.length} Documentos`;
+                        lawsList.innerHTML = data.files.map(file => `
+                            <div class="p-6 hover:bg-white/2 transition-all flex items-center justify-between group">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 bg-white/5 rounded-lg flex items-center justify-center text-lg">📙</div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-white/90">${file.name}</h4>
+                                        <p class="text-[10px] text-white/30 font-medium uppercase tracking-wider">
+                                            Procesado: ${new Date(file.date).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <span class="text-[10px] bg-[#efb810]/10 text-[#efb810] px-2 py-1 rounded border border-[#efb810]/20 font-bold uppercase">Activo</span>
+                                </div>
+                            </div>
+                        `).join('');
+                    } else {
+                        fileCount.textContent = '0 Documentos';
+                        lawsList.innerHTML = `
+                            <div class="p-12 text-center text-white/20">
+                                <p class="text-sm italic">No hay leyes procesadas aún. Sube tu primer PDF.</p>
+                            </div>
+                        `;
+                    }
+                } catch (err) {
+                    console.error('Error fetching laws:', err);
+                    lawsList.innerHTML = '<p class="p-8 text-red-500 text-center">Error al cargar la lista.</p>';
+                }
+            }
+
+            // Cargar lista al iniciar
+            fetchLaws();
+
+            uploadForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                processBtn.disabled = true;
+                processBtn.textContent = 'Procesando con Python...';
+
+                const file = fileInput.files[0];
+                const formData = new FormData();
+                formData.append('pdf', file);
+
+                try {
+                    const response = await fetch('/api/admin/process-law', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        alert('¡Ley procesada con éxito! Temis ya puede usarla.');
+                        await fetchLaws(); // Recargar lista sin recargar página
+                        uploadForm.reset();
+                        fileName.classList.add('hidden');
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                } catch (err) {
+                    alert('Error de conexión con el servidor.');
+                } finally {
+                    processBtn.disabled = false;
+                    processBtn.textContent = 'Procesar con Python';
+                }
+            });
+        </script>
+    </body>
+</html>

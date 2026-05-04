@@ -1,0 +1,21 @@
+---
+import ChatFull from "../components/ChatFull.jsx";
+import "../styles/global.css";
+
+// TODO: Validar sesión en el servidor o middleware
+---
+
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Panel de Control - Temis IA</title>
+        <meta name="description" content="Interfaz avanzada de consulta jurídica Temis." />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    </head>
+    <body class="bg-[#1e1e1e] font-['Outfit',sans-serif] overflow-hidden">
+        <ChatFull client:load />
+    </body>
+</html>

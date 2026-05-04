@@ -1,0 +1,126 @@
+---
+import "../styles/global.css";
+---
+
+<html lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <title>Ingresar - Temis IA</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    </head>
+    <body class="bg-[#1e1e1e] text-[#f0f0f0] font-['Outfit',sans-serif] min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+        {/* Background Decor */}
+        <div class="absolute top-0 left-0 w-full h-full -z-10 opacity-30">
+            <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[#921E16]/20 blur-[150px] rounded-full"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-[#efb810]/10 blur-[150px] rounded-full"></div>
+        </div>
+
+        <div class="w-full max-w-md">
+            {/* Logo */}
+            <div class="flex flex-col items-center gap-4 mb-10">
+                <div class="w-20 h-20 bg-gradient-to-br from-[#921E16] to-[#efb810] rounded-3xl flex items-center justify-center text-4xl shadow-2xl">
+                    ⚖️
+                </div>
+                <h1 class="text-3xl font-bold tracking-tight">Bienvenido a Temis</h1>
+                <p class="text-white/50 text-sm text-center">Ingresa tus credenciales para acceder al panel de asistente jurídico.</p>
+            </div>
+
+            {/* Login Card */}
+            <div class="bg-[#252525] border border-white/10 p-8 rounded-[32px] shadow-2xl backdrop-blur-xl">
+                <form id="loginForm" class="space-y-6">
+                    <div class="space-y-2">
+                        <label for="email" class="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Correo Electrónico</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email"
+                            required
+                            placeholder="admin@temis.com" 
+                            class="w-full bg-[#1e1e1e] border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-[#921E16]/50 transition-all text-white placeholder-white/20"
+                        />
+                    </div>
+                    <div class="space-y-2">
+                        <label for="password" class="text-xs font-bold uppercase tracking-widest text-white/40 ml-1">Contraseña</label>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password"
+                            required
+                            placeholder="••••••••" 
+                            class="w-full bg-[#1e1e1e] border border-white/5 rounded-2xl px-6 py-4 outline-none focus:border-[#921E16]/50 transition-all text-white placeholder-white/20"
+                        />
+                    </div>
+
+                    <div id="errorMessage" class="hidden text-red-500 text-xs font-bold text-center bg-red-500/10 py-3 rounded-xl border border-red-500/20">
+                        Credenciales inválidas. Inténtalo de nuevo.
+                    </div>
+
+                    <button 
+                        type="submit"
+                        class="w-full bg-gradient-to-r from-[#921E16] to-[#c43a30] hover:from-[#c43a30] hover:to-[#921E16] text-white font-bold py-5 rounded-2xl transition-all shadow-lg shadow-[#921E16]/20 active:scale-[0.98]"
+                    >
+                        Iniciar Sesión
+                    </button>
+                </form>
+
+                <div class="mt-8 pt-8 border-t border-white/5 flex flex-col gap-4">
+                    <button class="w-full bg-white/5 hover:bg-white/10 text-white/70 text-sm font-medium py-4 rounded-2xl transition-all border border-white/5">
+                        ¿Olvidaste tu contraseña?
+                    </button>
+                    <p class="text-[10px] text-center text-white/30 font-medium uppercase tracking-[2px]">
+                        Acceso Restringido • Solo Personal Autorizado
+                    </p>
+                </div>
+            </div>
+
+            {/* Back Link */}
+            <div class="mt-8 text-center">
+                <a href="/" class="text-white/40 hover:text-[#efb810] text-sm transition-all flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Volver al inicio
+                </a>
+            </div>
+        </div>
+
+        <script>
+            const loginForm = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                errorMessage.classList.add('hidden');
+                
+                const formData = new FormData(loginForm);
+                const email = formData.get('email');
+                const password = formData.get('password');
+
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Guardar flag básico para UI de landing, pero la seguridad real está en la cookie httpOnly
+                        localStorage.setItem('temis_admin_logged', 'true');
+                        window.location.href = '/chat';
+                    } else {
+                        errorMessage.textContent = data.error || 'Credenciales inválidas';
+                        errorMessage.classList.remove('hidden');
+                    }
+                } catch (err) {
+                    errorMessage.textContent = 'Error de conexión con el servidor';
+                    errorMessage.classList.remove('hidden');
+                }
+            });
+        </script>
+    </body>
+</html>
