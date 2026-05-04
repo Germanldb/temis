@@ -13,5 +13,9 @@ export default defineConfig({
   ],
   image: {
     service: passthroughImageService()
+  },
+  // Desactivamos experimental assets si estuviera activo por defecto
+  experimental: {
+    assets: false
   }
 });
