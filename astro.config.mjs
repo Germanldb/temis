@@ -1,4 +1,4 @@
-import { defineConfig, passthroughImageService } from 'astro/config';
+import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel';
@@ -10,12 +10,5 @@ export default defineConfig({
   integrations: [
     react(),
     tailwind()
-  ],
-  image: {
-    service: passthroughImageService()
-  },
-  // Desactivamos experimental assets si estuviera activo por defecto
-  experimental: {
-    assets: false
-  }
+  ]
 });
